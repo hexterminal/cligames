@@ -21,7 +21,6 @@ int main(void)
     char loc9 = '9';
     char *xo[10] = {&loc0, &loc1, &loc2, &loc3, &loc4, &loc5, &loc6, &loc7, &loc8, &loc9};
 
-    /* This will be implemented later. */
     bool loc0lock = false;
     bool loc1lock = false;
     bool loc2lock = false;
@@ -42,12 +41,10 @@ int main(void)
                         &loc7lock,
                         &loc8lock,
                         &loc9lock};
-    // greet();
-    // char *getmode = new char;
-    // std::cin >> *getmode;
+    
     drawboard(xo);
-    askmode(xo);
-    twoplayermode(xo);
+    askmode(xo, xolock);
+    twoplayermode(xo, xolock);
 
     return EXIT_SUCCESS;
 }

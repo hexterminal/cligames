@@ -1,8 +1,6 @@
 #include <cstdio>
 #include "tictactoe.hpp"
 #include <iostream>
-#include <string>
-#include <random>
 
 void clearconsole()
 {
@@ -29,75 +27,6 @@ void drawboard(char *board[])
 void greet()
 {
 	std::printf("Welcome!");
-}
-
-/*char askxo(char *somearg)
-{
-	static char *playerone = new char;
-	static char *playertwo = new char;
-	switch (*somearg)
-	{
-	case 'X':
-	case 'x':
-		return 'x'
-	case 'O':
-	case 'o':
-		return 'o'
-	default:
-		printf("Invalid Value, Player One will be assigned with \"x\"\n
-			Player Two will be assigned with \"o\"\n");
-		*playerone = 'x';
-		*playertwo = 'o';
-	}
-	return value
-}*/
-
-void aimode(char *board[])
-{
-	clearconsole();
-
-	static char *playerone = new char;
-	static char *playertwo = new char;
-	static char*playerturn = new char;
-
-	*playerone = 'x';
-	*playertwo = 'o';
-
-	std::random_device rd;
-
-	while (true)
-	{
-		std::uniform_int_distribution<int>random(1,2);
-		int location = 10;
-
-		drawboard(board);
-		checkwinner(board);
-		std::cout << "Player One enter your choice: ";
-		std::cin >> location;
-		*board[location] = *playerone;
-
-		drawboard(board);
-		checkwinner(board);
-		std::cout << "Ai is thinking...\n";
-
-		// THE MAIN AI PART IS HERE
-		if (*board[1] == *playerone)
-		{
-			*board[location] = random(rd);
-		}
-		else if (*board[2] == *playerone)
-		{
-			*board[location] = random(rd);
-		}
-		else if (*board[3] == *playerone)
-		{
-			*board[location] = random(rd);
-		}
-		else if (*board[4] == *playerone)
-		{
-			*board[location] = random(rd);
-		}
-	}
 }
 
 void check(char *argcheck[])
@@ -168,7 +97,7 @@ void checkwinner(char *board[])
 	}
 }
 
-void twoplayermode(char *board[])
+void twoplayermode(char *board[], bool *lock[])
 {
 	clearconsole();
 
@@ -183,21 +112,47 @@ void twoplayermode(char *board[])
 	{
 		int location = 10;
 
-		drawboard(board);
-		checkwinner(board);
-		std::cout << "Player One enter your choice: ";
-		std::cin >> location;
-		*board[location] = *playerone;
+		while (true)
+		{
+			drawboard(board);
+			checkwinner(board);
+			std::cout << "Player One enter your choice: ";
+			std::cin >> location;
+			if (!*lock[location])
+			{
+				*board[location] = *playerone;
+				*lock [location] = true;
+				break;
+			}
+			else
+			{
+				std::cout << "You cannot overwrite " << location << "." << std::endl;
+				continue;
+			}
+		}
 
-		drawboard(board);
-		checkwinner(board);
-		std::cout << "Player Two enter your choice: ";
-		std::cin >> location;
-		*board[location] = *playertwo;
+		while (true)
+		{
+			drawboard(board);
+			checkwinner(board);
+			std::cout << "Player Two enter your choice: ";
+			std::cin >> location;
+			if (!*lock[location])
+			{
+				*board[location] = *playertwo;
+				*lock [location] = true;
+				break;
+			}
+			else
+			{
+				std::cout << "You cannot overwrite " << location << "." << std::endl;
+				continue;
+			}
+		}
 	}
 }
 
-void askmode(char *xoxo[])
+void askmode(char *xoxo[], bool *lock[])
 {
 	char mode2;
 	std::cout << "(P)VP or (A)I?: ";
@@ -207,12 +162,17 @@ void askmode(char *xoxo[])
 	{
 		std::printf("Ai Mode...\n");
 		// aimode(xoxo);
-		std::printf("Not yet implemented completely, Exiting...\n");
+		std::printf("Not yet implemented yet, exiting...\n");
 		exit(-1);
 	}
 	else if (mode2 == '2' | mode2 == 't' | mode2 == 'T' | mode2 == 'p' | mode2 == 'P')
 	{
 		std::printf("2 Player Mode...\n");
-		twoplayermode(xoxo);
+		twoplayermode(xoxo, lock);
+	}
+	else
+	{
+		std::printf("Invalid Option...\n");
+		exit(-1);
 	}
 }
